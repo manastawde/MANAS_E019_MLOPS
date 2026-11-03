@@ -1,0 +1,15 @@
+# kube-prometheus-stack, ports/names chosen to avoid the existing Devops Grafana project
+grafana:
+  adminPassword: exp5-demo-only   # local demo cluster only, not exposed
+  service: {type: ClusterIP}
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    additionalScrapeConfigs:
+      - job_name: iris
+        metrics_path: /metrics/
+        kubernetes_sd_configs: [{role: endpoints, namespaces: {names: [mlops-exp5]}}]
+        relabel_configs:
+          - {source_labels: [__meta_kubernetes_service_label_app], regex: iris, action: keep}
+          - {source_labels: [__meta_kubernetes_endpoint_port_name], regex: http, action: keep}
+          - {source_labels: [__meta_kubernetes_pod_name], target_label: pod}
