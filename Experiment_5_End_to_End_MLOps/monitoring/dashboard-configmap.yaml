@@ -1,0 +1,244 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iris-dashboard
+  namespace: monitoring
+  labels: {grafana_dashboard: "1"}
+data:
+  iris.json: |
+    {
+     "uid": "iris-exp5",
+     "title": "Iris MLOps - Experiment 5",
+     "schemaVersion": 39,
+     "refresh": "10s",
+     "time": {
+      "from": "now-15m",
+      "to": "now"
+     },
+     "panels": [
+      {
+       "id": 1,
+       "title": "Prediction requests / s (by species)",
+       "type": "timeseries",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "reqps"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "sum(rate(iris_predictions_total[1m])) by (species)",
+         "legendFormat": "{{species}}",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 2,
+       "title": "p95 latency /predict",
+       "type": "timeseries",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "s"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{path=\"/predict\"}[1m])) by (le))",
+         "legendFormat": "p95",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 3,
+       "title": "Error rate (5xx / s)",
+       "type": "timeseries",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "reqps"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "sum(rate(http_requests_total{status=~\"5..\"}[1m]))",
+         "legendFormat": "5xx",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 4,
+       "title": "Application health (up)",
+       "type": "stat",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "short"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "up{job=\"iris\"}",
+         "legendFormat": "{{pod}}",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 5,
+       "title": "Pod CPU (cores)",
+       "type": "timeseries",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 8,
+        "y": 7,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "short"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"mlops-exp5\",container=\"iris\"}[1m])) by (pod)",
+         "legendFormat": "{{pod}}",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 6,
+       "title": "Pod memory",
+       "type": "timeseries",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 16,
+        "y": 7,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "bytes"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "sum(container_memory_working_set_bytes{namespace=\"mlops-exp5\",container=\"iris\"}) by (pod)",
+         "legendFormat": "{{pod}}",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 7,
+       "title": "Ready replicas",
+       "type": "stat",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "short"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "kube_deployment_status_replicas_available{namespace=\"mlops-exp5\",deployment=\"iris\"}",
+         "legendFormat": "available",
+         "refId": "A"
+        }
+       ]
+      },
+      {
+       "id": 8,
+       "title": "Pod restarts",
+       "type": "stat",
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+       },
+       "gridPos": {
+        "x": 8,
+        "y": 14,
+        "w": 8,
+        "h": 7
+       },
+       "fieldConfig": {
+        "defaults": {
+         "unit": "short"
+        },
+        "overrides": []
+       },
+       "targets": [
+        {
+         "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"mlops-exp5\"}) by (pod)",
+         "legendFormat": "{{pod}}",
+         "refId": "A"
+        }
+       ]
+      }
+     ]
+    }

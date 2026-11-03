@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+.env.*
+*.pyc
+Experiment_5_End_to_End_MLOps/evidence/*.tmp

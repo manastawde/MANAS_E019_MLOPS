@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Namespace
+metadata: {name: mlops-exp5}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: iris, namespace: mlops-exp5, labels: {app: iris}}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app: iris}}
+  template:
+    metadata: {labels: {app: iris}}
+    spec:
+      containers:
+        - name: iris
+          image: parthmangrulkar2004/iris-mlops:latest
+          ports: [{containerPort: 8000}]
+          readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 5}
+          livenessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: 500m, memory: 384Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris
+  namespace: mlops-exp5
+  labels: {app: iris}
+spec:
+  selector: {app: iris}
+  ports: [{name: http, port: 8000, targetPort: 8000}]

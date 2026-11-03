@@ -1,0 +1,16 @@
+﻿apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata: {name: iris-alerts, namespace: monitoring, labels: {release: monitoring}}
+spec:
+  groups:
+    - name: iris
+      rules:
+        - alert: IrisDown
+          expr: (sum(up{job="iris"}) or vector(0)) < 1
+          for: 30s
+          labels: {severity: critical}
+        - alert: IrisHighErrorRate
+          expr: sum(rate(http_requests_total{status=~"5.."}[1m])) / sum(rate(http_requests_total[1m])) > 0.2
+          for: 30s
+          labels: {severity: warning}
+

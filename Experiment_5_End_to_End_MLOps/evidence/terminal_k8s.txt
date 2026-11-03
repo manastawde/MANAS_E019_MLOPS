@@ -1,0 +1,26 @@
+$ kubectl get nodes
+NAME                    STATUS   ROLES           AGE   VERSION
+desktop-control-plane   Ready    control-plane   28m   v1.36.1
+
+$ kubectl -n mlops-exp5 get deploy,pods,svc -o wide
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                                  SELECTOR
+deployment.apps/iris   2/2     2            2           28m   iris         parthmangrulkar2004/iris-mlops:latest   app=iris
+
+NAME                        READY   STATUS    RESTARTS   AGE     IP            NODE                    NOMINATED NODE   READINESS GATES
+pod/iris-6b9db9f858-82bk6   1/1     Running   0          2m49s   10.244.0.17   desktop-control-plane   <none>           <none>
+pod/iris-6b9db9f858-hqjl7   1/1     Running   0          2m49s   10.244.0.18   desktop-control-plane   <none>           <none>
+
+NAME           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+service/iris   ClusterIP   10.96.178.206   <none>        8000/TCP   28m   app=iris
+
+$ kubectl -n monitoring get pods
+NAME                                                     READY   STATUS    RESTARTS   AGE
+alertmanager-monitoring-kube-prometheus-alertmanager-0   2/2     Running   0          25m
+monitoring-grafana-6ccb6c56f7-cgtzk                      3/3     Running   0          26m
+monitoring-kube-prometheus-operator-d94b4f4b6-597dv      1/1     Running   0          26m
+monitoring-kube-state-metrics-764584797b-v9k5c           1/1     Running   0          26m
+monitoring-prometheus-node-exporter-hw8mf                1/1     Running   0          26m
+prometheus-monitoring-kube-prometheus-prometheus-0       2/2     Running   0          25m
+
+$ kubectl -n mlops-exp5 describe deploy iris | image
+parthmangrulkar2004/iris-mlops:latest

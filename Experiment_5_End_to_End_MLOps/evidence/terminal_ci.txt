@@ -1,0 +1,8 @@
+$ gh run list
+completed	success	Experiment 5: End-to-End MLOps pipeline	Exp5 MLOps CI/CD	feature/exp5-end-to-end-mlops	pull_request	41611171386	59s	2026-11-03T09:27:27Z
+completed	success	Use parthmangrulkar2004 Docker Hub image in k8s manifest	Exp5 MLOps CI/CD	feature/exp5-end-to-end-mlops	push	41611164747	1m12s	2026-11-03T09:27:24Z
+completed	success	Experiment 5: End-to-End MLOps pipeline	Exp5 MLOps CI/CD	feature/exp5-end-to-end-mlops	pull_request	41609152994	1m7s	2026-11-03T09:12:37Z
+completed	success	Add Experiment 5: end-to-end MLOps (FastAPI Iris, Docker, CI/CD, k8s,…	Exp5 MLOps CI/CD	feature/exp5-end-to-end-mlops	push	41609150944	1m15s	2026-11-03T09:25:36Z
+
+$ pytest
+5 passed, 1 warning in 2.45s
