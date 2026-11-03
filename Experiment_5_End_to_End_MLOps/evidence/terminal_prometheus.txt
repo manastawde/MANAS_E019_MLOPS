@@ -1,0 +1,12 @@
+target iris-6b9db9f858-82bk6 up http://10.244.0.17:8000/metrics/
+target iris-6b9db9f858-hqjl7 up http://10.244.0.18:8000/metrics/
+sum(iris_predictions_total) by (species)
+   {'species': 'virginica'} 226
+   {'species': 'versicolor'} 255
+   {'species': 'setosa'} 251
+sum(http_requests_total) by (status)
+   {'status': '200'} 794
+histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{path="/predict"}[5m])) by (le))
+   {} 0.00487657981089132
+rule IrisDown inactive
+rule IrisHighErrorRate inactive
